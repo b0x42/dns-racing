@@ -4,7 +4,7 @@
 [![dotenv](https://img.shields.io/badge/config-dotenv-yellow.svg)](https://github.com/motdotla/dotenv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Fires parallel DNS lookups at your custom server (AdGuard, Pi-hole, Unbound, etc.) and public resolvers simultaneously, and shows live latency stats so you can compare them.
+Ever wondered how your DNS server compares to cloud DNS? This tool fires parallel lookups at your custom server (AdGuard, Pi-hole, Unbound, etc.) and public resolvers simultaneously, showing live latency stats so you can see exactly how they stack up.
 
 - Cache warmup before recording so cold-cache queries don't skew results
 - Blocked domains (NXDOMAIN) counted separately, not as errors

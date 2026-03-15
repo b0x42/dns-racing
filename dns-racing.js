@@ -23,7 +23,7 @@ const CONFIG = {
   RPS:           rps,                                      // requests per second per server
   STATS_EVERY:   envNum('STATS_EVERY', 5000), // ms between live stat prints
   TIMEOUT:       envNum('TIMEOUT',     5000), // DNS query timeout in ms
-  OUTPUT:        `dns_latency_${new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-')}.csv`,
+  OUTPUT:        `dns_racing_${new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-')}.csv`,
   WINDOW:        envNum('WINDOW',        500), // rolling window size — keeps memory bounded for long runs
   WARMUP_ROUNDS: envNum('WARMUP_ROUNDS',   2), // full passes through DOMAINS before recording starts
   CACHE_HIT_MS:  envNum('CACHE_HIT_MS', 1.0), // responses faster than this are flagged as cache hits

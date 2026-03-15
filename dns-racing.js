@@ -61,14 +61,17 @@ function percentile(sorted, p) {
 
 // Extracts stats from a rolling window of results for one server
 function computeStats(results) {
-  const ok       = results.filter(r => r.ok).map(r => r.ms);
-  const blocked  = results.filter(r => r.blocked).length;
-  const errors   = results.filter(r => !r.ok && !r.blocked).length;
-  const cacheHits = results.filter(r => r.cacheHit).length;
-  if (!ok.length) return null;
-  const sorted = [...ok].sort((a, b) => a - b);
-  const avg    = ok.reduce((a, b) => a + b, 0) / ok.length;
-  return { ok: ok.length, blocked, errors, cacheHits, min: sorted[0], avg, p95: percentile(sorted, 95), max: sorted.at(-1) };
+  const okMs = [];
+  let blocked = 0, errors = 0, cacheHits = 0;
+  for (const r of results) {
+    if (r.ok)           { okMs.push(r.ms); if (r.cacheHit) cacheHits++; }
+    else if (r.blocked) { blocked++; }
+    else                { errors++; }
+  }
+  if (!okMs.length) return null;
+  const sorted = [...okMs].sort((a, b) => a - b);
+  const avg    = okMs.reduce((a, b) => a + b, 0) / okMs.length;
+  return { ok: okMs.length, blocked, errors, cacheHits, min: sorted[0], avg, p95: percentile(sorted, 95), max: sorted.at(-1) };
 }
 
 function printStats(store, elapsed) {

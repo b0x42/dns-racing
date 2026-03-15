@@ -4,53 +4,45 @@
 [![dotenv](https://img.shields.io/badge/config-dotenv-yellow.svg)](https://github.com/motdotla/dotenv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-If you run your own DNS server (AdGuard, Pi-hole, Unbound, etc.), you probably wonder whether it's actually faster than just using Cloudflare or Google. This tool answers that question — it fires parallel DNS lookups at your custom server and one or more public resolvers simultaneously, and shows you live latency stats so you can see exactly how they compare.
+Fires parallel DNS lookups at your custom server (AdGuard, Pi-hole, Unbound, etc.) and public resolvers simultaneously, and shows live latency stats so you can compare them.
 
-- **Cache warmup** — both resolvers are pre-warmed before recording starts, so cold-cache queries don't skew results
-- **Blocked domain detection** — NXDOMAIN responses from your custom DNS are counted separately as `Blocked`, not as errors, so ad-blocking doesn't make your server look worse than it is
-- **Cache hit flagging** — sub-1ms responses are tracked in a dedicated `Cache` column so you can distinguish true resolver performance from memory-cached responses
-- **Multiple public resolvers** — compare against Cloudflare, Google, Quad9, or any resolver simultaneously via `EXTRA_DNS`
-- **Per-domain breakdown on exit** — shows which specific domains your custom DNS wins or loses on, sorted by biggest difference
-- **Verdict on exit** — prints a clear winner with the avg latency difference and % improvement
-- Round-robin across 30 real-world domains
-- Timestamped CSV output for offline analysis
+- Cache warmup before recording so cold-cache queries don't skew results
+- Blocked domains (NXDOMAIN) counted separately, not as errors
+- Sub-1ms responses flagged as cache hits in a dedicated column
+- Compare against multiple public resolvers via `EXTRA_DNS`
+- Per-domain breakdown and verdict on exit
+- CSV output for offline analysis
 
 ## Quick Start
 
 ```bash
-npm install
+npm install     # requires Node.js >= 16.4
 cp .env.example .env   # edit CUSTOM_DNS to your server's IP
 node dns-tracker.js
 ```
 
-Press `Ctrl+C` to stop. Final stats, per-domain breakdown, verdict, and CSV are all flushed on exit.
+Press `Ctrl+C` to stop and flush final stats, breakdown, verdict, and CSV.
 
 ## Configuration
-
-Set values in your `.env` file (copy from `.env.example`):
 
 | Key | Default | Description |
 |---|---|---|
 | `CUSTOM_DNS` | `192.168.0.5` | Your DNS server IP |
-| `CUSTOM_DNS_LABEL` | `My DNS` | Display name for your server (e.g. `AdGuard`, `Pi-hole`, `Unbound`) |
-| `CLOUDFLARE` | `1.1.1.1` | Primary public resolver to compare against |
+| `CUSTOM_DNS_LABEL` | `My DNS` | Display name (e.g. `AdGuard`, `Pi-hole`) |
+| `CLOUDFLARE` | `1.1.1.1` | Primary public resolver |
 | `EXTRA_DNS` | _(empty)_ | Additional resolvers, e.g. `8.8.8.8:Google,9.9.9.9:Quad9` |
 | `RPS` | `25` | Queries per second per server |
 | `STATS_EVERY` | `5000` | ms between live stat prints |
-| `TIMEOUT` | `5000` | DNS query timeout in ms |
-| `WINDOW` | `500` | Rolling window size for live stats (results per server) |
-| `WARMUP_ROUNDS` | `2` | Full domain passes before recording starts |
-| `CACHE_HIT_MS` | `1.0` | Threshold in ms below which a response is flagged as a cache hit |
+| `TIMEOUT` | `5000` | Query timeout in ms |
+| `WINDOW` | `500` | Rolling window size (results per server) |
+| `WARMUP_ROUNDS` | `2` | Domain passes before recording starts |
+| `CACHE_HIT_MS` | `1.0` | Threshold in ms for cache hit detection |
 
 ## Output
-
-Both resolvers are warmed up silently before recording starts:
 
 ```
   Warming up cache (60 queries per server)... done
 ```
-
-Live stats print to the terminal every 5 seconds:
 
 ```
 Stats after 10s
@@ -61,8 +53,6 @@ Stats after 10s
 │   Cloudflare │    250 │      0 │       0 │     0 │     8.5ms │    12.1ms │    18.4ms │    35.6ms │
 └──────────────┴────────┴────────┴─────────┴───────┴───────────┴───────────┴───────────┴───────────┘
 ```
-
-On exit, a per-domain breakdown is printed showing where your custom DNS wins or loses:
 
 ```
 Per-domain breakdown (My DNS vs Cloudflare)
@@ -76,18 +66,13 @@ Per-domain breakdown (My DNS vs Cloudflare)
 └────────────────────┴───────────┴───────────┴────────────┘
 ```
 
-Followed by a verdict:
-
 ```
 Verdict
   My DNS  avg 3.4ms  p95 8.1ms  min 0.3ms
   vs Cloudflare: My DNS wins  3.4ms vs 12.1ms  (71.9% faster)
-
-# or if your DNS is slower:
-  vs Cloudflare: Cloudflare wins  8.4ms vs 513.5ms  (98.4% faster)
 ```
 
-A CSV file named `dns_latency_<timestamp>.csv` is written to the current directory:
+CSV: `dns_latency_<timestamp>.csv`
 
 ```
 timestamp,server,domain,latency_ms,status
@@ -95,11 +80,6 @@ timestamp,server,domain,latency_ms,status
 2026-03-15T15:12:28.001Z,192.168.0.5,doubleclick.net,1.10,nxdomain
 ```
 
-## Prerequisites
-
-- Node.js >= 16.4
-- `npm install` (installs dotenv)
-
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).

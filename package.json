@@ -2,9 +2,9 @@
   "name": "dns-racing",
   "version": "1.0.0",
   "description": "Race your custom DNS server against Cloudflare, Google, and other public resolvers with live latency stats and CSV output",
-  "main": "dns-race.js",
+  "main": "dns-racing.js",
   "scripts": {
-    "start": "node dns-race.js",
+    "start": "node dns-racing.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

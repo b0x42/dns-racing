@@ -12,7 +12,8 @@ const rps = Number(process.env.RPS) || 25;
 if (rps <= 0) { console.error('RPS must be a positive number'); process.exit(1); }
 
 const CONFIG = {
-  CUSTOM_DNS:    process.env.CUSTOM_DNS ?? '192.168.0.5', // ← your DNS server IP
+  CUSTOM_DNS:       process.env.CUSTOM_DNS       ?? '192.168.0.5', // ← your DNS server IP
+  CUSTOM_DNS_LABEL: process.env.CUSTOM_DNS_LABEL ?? 'My DNS',     // display name for your DNS server
   CLOUDFLARE:    process.env.CLOUDFLARE ?? '1.1.1.1',
   EXTRA_DNS:     process.env.EXTRA_DNS  ?? '',            // e.g. "8.8.8.8:Google,9.9.9.9:Quad9"
   RPS:           rps,                                      // requests per second per server
@@ -117,22 +118,27 @@ function printVerdict(store) {
   if (!sCustom) return;
 
   const { label: customLabel, color: customColor } = SERVERS[customIp];
+  const fmtMs = v => `${v.toFixed(1)}ms`;
+
   console.log(`\n${BOLD}Verdict${RESET}`);
+  console.log(`  ${customColor}${BOLD}${customLabel}${RESET}  avg ${BOLD}${fmtMs(sCustom.avg)}${RESET}  p95 ${BOLD}${fmtMs(sCustom.p95)}${RESET}  min ${BOLD}${fmtMs(sCustom.min)}${RESET}`);
 
   for (const ip of publicIps) {
     const s = computeStats(store[ip]);
     if (!s) continue;
     const { label, color } = SERVERS[ip];
     const diff = s.avg - sCustom.avg;
-    const pct  = Math.abs(diff / s.avg * 100).toFixed(1);
+    const pct  = (Math.abs(diff) / Math.max(s.avg, sCustom.avg) * 100).toFixed(1); // % relative to the slower server
 
+    let verdict;
     if (Math.abs(diff) < 0.5) {
-      console.log(`  vs ${color}${label}${RESET}: ${YELLOW}Too close to call${RESET} — avg within 0.5ms`);
+      verdict = `${YELLOW}Too close to call${RESET} — ${customColor}${customLabel}${RESET} ${fmtMs(sCustom.avg)} vs ${color}${label}${RESET} ${fmtMs(s.avg)}`;
     } else if (diff > 0) {
-      console.log(`  vs ${color}${label}${RESET}: ${customColor}${BOLD}${customLabel}${RESET} faster by ${BOLD}${diff.toFixed(1)}ms${RESET} (${pct}% improvement)`);
+      verdict = `${customColor}${BOLD}${customLabel}${RESET} wins  ${BOLD}${fmtMs(sCustom.avg)}${RESET} vs ${fmtMs(s.avg)}  (${pct}% faster)`;
     } else {
-      console.log(`  vs ${color}${label}${RESET}: ${color}${BOLD}${label}${RESET} faster by ${BOLD}${Math.abs(diff).toFixed(1)}ms${RESET} (${pct}% improvement)`);
+      verdict = `${color}${BOLD}${label}${RESET} wins  ${BOLD}${fmtMs(s.avg)}${RESET} vs ${fmtMs(sCustom.avg)}  (${pct}% faster)`;
     }
+    console.log(`  vs ${color}${label}${RESET}: ${verdict}`);
   }
 }
 
@@ -181,7 +187,7 @@ function printDomainBreakdown() {
 let SERVERS;
 try {
   SERVERS = {
-    [CONFIG.CUSTOM_DNS]: { label: 'AdGuard',    color: CYAN,  resolver: createResolver(CONFIG.CUSTOM_DNS) },
+    [CONFIG.CUSTOM_DNS]: { label: CONFIG.CUSTOM_DNS_LABEL, color: CYAN,  resolver: createResolver(CONFIG.CUSTOM_DNS) },
     [CONFIG.CLOUDFLARE]: { label: 'Cloudflare', color: GREEN, resolver: createResolver(CONFIG.CLOUDFLARE) },
   };
 

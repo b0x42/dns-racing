@@ -14,6 +14,7 @@ Ever wondered how your DNS server compares to cloud DNS? This tool fires paralle
 ## Quick Start
 
 ```bash
+git clone https://github.com/b0x42/dns-racing.git && cd dns-racing
 npm install     # requires Node.js >= 16.4
 cp .env.example .env   # edit CUSTOM_DNS to your server's IP
 npm start
@@ -70,7 +71,7 @@ Race Results
   vs Cloudflare: My DNS wins  3.4ms vs 12.1ms  (71.9% faster)
 ```
 
-CSV: `dns_latency_<timestamp>.csv`
+CSV: `dns_racing_<timestamp>.csv`
 
 ```
 timestamp,server,domain,latency_ms,status

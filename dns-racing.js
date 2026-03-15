@@ -8,7 +8,11 @@ const fs = require('node:fs');
 const { performance } = require('node:perf_hooks');
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const rps = Number(process.env.RPS) || 25;
+// Returns the numeric env var if set and valid, otherwise the default.
+// Uses NaN check instead of || so that explicitly setting a value to 0 is respected.
+const envNum = (key, def) => { const v = Number(process.env[key]); return isNaN(v) ? def : v; };
+
+const rps = envNum('RPS', 25);
 if (rps <= 0) { console.error('RPS must be a positive number'); process.exit(1); }
 
 const CONFIG = {
@@ -17,12 +21,12 @@ const CONFIG = {
   CLOUDFLARE:    process.env.CLOUDFLARE ?? '1.1.1.1',
   EXTRA_DNS:     process.env.EXTRA_DNS  ?? '',            // e.g. "8.8.8.8:Google,9.9.9.9:Quad9"
   RPS:           rps,                                      // requests per second per server
-  STATS_EVERY:   Number(process.env.STATS_EVERY) || 5000, // ms between live stat prints
-  TIMEOUT:       Number(process.env.TIMEOUT)     || 5000, // DNS query timeout in ms
+  STATS_EVERY:   envNum('STATS_EVERY', 5000), // ms between live stat prints
+  TIMEOUT:       envNum('TIMEOUT',     5000), // DNS query timeout in ms
   OUTPUT:        `dns_latency_${new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-')}.csv`,
-  WINDOW:        Number(process.env.WINDOW)        || 500,  // rolling window size — keeps memory bounded for long runs
-  WARMUP_ROUNDS: Number(process.env.WARMUP_ROUNDS) || 2,    // full passes through DOMAINS before recording starts
-  CACHE_HIT_MS:  Number(process.env.CACHE_HIT_MS)  || 1.0,  // responses faster than this are flagged as cache hits
+  WINDOW:        envNum('WINDOW',        500), // rolling window size — keeps memory bounded for long runs
+  WARMUP_ROUNDS: envNum('WARMUP_ROUNDS',   2), // full passes through DOMAINS before recording starts
+  CACHE_HIT_MS:  envNum('CACHE_HIT_MS', 1.0), // responses faster than this are flagged as cache hits
 };
 // ─────────────────────────────────────────────────────────────────────────────
 

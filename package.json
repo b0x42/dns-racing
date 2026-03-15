@@ -1,5 +1,5 @@
 {
-  "name": "dns-latency-tracker",
+  "name": "dns-racing",
   "version": "1.0.0",
   "description": "Benchmark your custom DNS server against public resolvers like Cloudflare and Google with live latency stats and CSV output",
   "main": "dns-tracker.js",

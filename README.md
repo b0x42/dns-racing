@@ -1,4 +1,4 @@
-# DNS Latency Tracker
+# DNS Racing
 
 [![Node.js](https://img.shields.io/badge/Node.js-16.4+-green.svg)](https://nodejs.org/)
 [![dotenv](https://img.shields.io/badge/config-dotenv-yellow.svg)](https://github.com/motdotla/dotenv)

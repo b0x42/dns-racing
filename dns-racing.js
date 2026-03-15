@@ -39,6 +39,8 @@ const DOMAINS = [
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const RESET = '\x1b[0m', BOLD = '\x1b[1m';
+const CLEAR_LINE = '\x1b[2K';
+let tableLineCount = 0; // tracks how many lines the live table occupies so we can overwrite it
 const GREEN = '\x1b[32m', CYAN = '\x1b[36m', YELLOW = '\x1b[33m', MAGENTA = '\x1b[35m', BLUE = '\x1b[34m';
 
 // Colors cycled through for extra public resolvers
@@ -75,9 +77,11 @@ function printStats(store, elapsed) {
   const hr    = (l, m, r) => l + Object.values(cols).map(w => '─'.repeat(w + 2)).join(m) + r;
   const cell  = (v, w) => ` ${String(v).padStart(w)} `;
 
-  console.log(`\n${BOLD}Stats after ${(elapsed / 1000).toFixed(0)}s${RESET}`);
-  console.log(hr('┌', '┬', '┐'));
-  console.log(
+  const lines = [];
+  lines.push('');
+  lines.push(`${BOLD}Stats after ${(elapsed / 1000).toFixed(0)}s${RESET}`);
+  lines.push(hr('┌', '┬', '┐'));
+  lines.push(
     '│' + cell('Server',  cols.server)  +
     '│' + cell('OK',      cols.ok)      +
     '│' + cell('Cache',   cols.cache)   +
@@ -88,15 +92,15 @@ function printStats(store, elapsed) {
     '│' + cell('p95',     cols.p95)     +
     '│' + cell('Max',     cols.max)     + '│'
   );
-  console.log(hr('├', '┼', '┤'));
+  lines.push(hr('├', '┼', '┤'));
 
   for (const [ip, { label, color }] of Object.entries(SERVERS)) {
     const s = computeStats(store[ip]);
     if (!s) {
-      console.log('│' + ` ${color}${BOLD}${label.padEnd(cols.server)}${RESET}` + ' │' + ' (no results yet)');
+      lines.push('│' + ` ${color}${BOLD}${label.padEnd(cols.server)}${RESET}` + ' │' + ' (no results yet)');
       continue;
     }
-    console.log(
+    lines.push(
       '│' + ` ${color}${BOLD}${label.padEnd(cols.server)}${RESET} ` +
       '│' + cell(s.ok,           cols.ok)      +
       '│' + cell(s.cacheHits,    cols.cache)   +
@@ -108,7 +112,12 @@ function printStats(store, elapsed) {
       '│' + cell(fmtMs(s.max),   cols.max)      + '│'
     );
   }
-  console.log(hr('└', '┴', '┘'));
+  lines.push(hr('└', '┴', '┘'));
+
+  // Move cursor up to overwrite the previous table on all updates after the first
+  if (tableLineCount > 0) process.stdout.write(`\x1b[${tableLineCount}A`);
+  for (const line of lines) process.stdout.write(`${CLEAR_LINE}${line}\n`);
+  tableLineCount = lines.length;
 }
 
 // Compares custom DNS avg against each public resolver and prints a verdict per pair
@@ -263,7 +272,7 @@ async function warmup() {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-console.log(`\n${BOLD}DNS Latency Tracker${RESET}`);
+console.log(`\n${BOLD}DNS Racing${RESET}`);
 for (const [ip, { label, color }] of Object.entries(SERVERS)) {
   console.log(`  ${color}${label.padEnd(12)}${RESET} ${ip}`);
 }

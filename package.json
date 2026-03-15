@@ -1,0 +1,24 @@
+{
+  "name": "dns-latency-tracker",
+  "version": "1.0.0",
+  "description": "[![Node.js](https://img.shields.io/badge/Node.js-16.4+-green.svg)](https://nodejs.org/) [![No Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)]() [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)",
+  "main": "dns-tracker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b0x42/dns-latency-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/b0x42/dns-latency-tracker/issues"
+  },
+  "homepage": "https://github.com/b0x42/dns-latency-tracker#readme",
+  "dependencies": {
+    "dotenv": "^17.3.1"
+  }
+}

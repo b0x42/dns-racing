@@ -1,0 +1,4 @@
+*.csv
+.env
+.claude/
+node_modules/

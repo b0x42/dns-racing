@@ -1,23 +1,23 @@
 {
   "name": "dns-racing",
   "version": "1.0.0",
-  "description": "Benchmark your custom DNS server against public resolvers like Cloudflare and Google with live latency stats and CSV output",
+  "description": "Race your custom DNS server against Cloudflare, Google, and other public resolvers with live latency stats and CSV output",
   "main": "dns-tracker.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/b0x42/dns-latency-tracker.git"
+    "url": "git+https://github.com/b0x42/dns-racing.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/b0x42/dns-latency-tracker/issues"
+    "url": "https://github.com/b0x42/dns-racing/issues"
   },
-  "homepage": "https://github.com/b0x42/dns-latency-tracker#readme",
+  "homepage": "https://github.com/b0x42/dns-racing#readme",
   "dependencies": {
     "dotenv": "^17.3.1"
   }

@@ -8,7 +8,7 @@ Ever wondered how your DNS server compares to cloud DNS? This tool fires paralle
 
 - Compare your avg response time to one or more cloud DNS servers (Cloudflare, Google, Quad9, etc.)
 - Smart measurement — warms up caches before recording, separates blocked domains from errors, and flags cache hits so results are always meaningful
-- Per-domain breakdown and verdict on exit
+- Instant results with a detailed breakdown per domain
 - Auto CSV logging so you can analyse results with any tool you like
 
 ## Quick Start

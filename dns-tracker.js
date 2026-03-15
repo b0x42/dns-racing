@@ -19,9 +19,9 @@ const CONFIG = {
   STATS_EVERY:   Number(process.env.STATS_EVERY) || 5000, // ms between live stat prints
   TIMEOUT:       Number(process.env.TIMEOUT)     || 5000, // DNS query timeout in ms
   OUTPUT:        `dns_latency_${new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-')}.csv`,
-  WINDOW:        500,  // rolling window size — keeps memory bounded for long runs
-  WARMUP_ROUNDS: 2,    // full passes through DOMAINS before recording starts
-  CACHE_HIT_MS:  1.0,  // responses faster than this are flagged as cache hits
+  WINDOW:        Number(process.env.WINDOW)        || 500,  // rolling window size — keeps memory bounded for long runs
+  WARMUP_ROUNDS: Number(process.env.WARMUP_ROUNDS) || 2,    // full passes through DOMAINS before recording starts
+  CACHE_HIT_MS:  Number(process.env.CACHE_HIT_MS)  || 1.0,  // responses faster than this are flagged as cache hits
 };
 // ─────────────────────────────────────────────────────────────────────────────
 

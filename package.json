@@ -1,7 +1,7 @@
 {
   "name": "dns-latency-tracker",
   "version": "1.0.0",
-  "description": "[![Node.js](https://img.shields.io/badge/Node.js-16.4+-green.svg)](https://nodejs.org/) [![No Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)]() [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)",
+  "description": "Benchmark your custom DNS server against public resolvers like Cloudflare and Google with live latency stats and CSV output",
   "main": "dns-tracker.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

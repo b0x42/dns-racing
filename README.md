@@ -37,6 +37,9 @@ Set values in your `.env` file (copy from `.env.example`):
 | `RPS` | `25` | Queries per second per server |
 | `STATS_EVERY` | `5000` | ms between live stat prints |
 | `TIMEOUT` | `5000` | DNS query timeout in ms |
+| `WINDOW` | `500` | Rolling window size for live stats (results per server) |
+| `WARMUP_ROUNDS` | `2` | Full domain passes before recording starts |
+| `CACHE_HIT_MS` | `1.0` | Threshold in ms below which a response is flagged as a cache hit |
 
 ## Output
 

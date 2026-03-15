@@ -16,7 +16,7 @@ Ever wondered how your DNS server compares to cloud DNS? This tool fires paralle
 ```bash
 npm install     # requires Node.js >= 16.4
 cp .env.example .env   # edit CUSTOM_DNS to your server's IP
-node dns-tracker.js
+npm start
 ```
 
 Press `Ctrl+C` to stop and flush final stats, breakdown, verdict, and CSV.

@@ -120,7 +120,7 @@ function printVerdict(store) {
   const { label: customLabel, color: customColor } = SERVERS[customIp];
   const fmtMs = v => `${v.toFixed(1)}ms`;
 
-  console.log(`\n${BOLD}Verdict${RESET}`);
+  console.log(`\n${BOLD}Race Results${RESET}`);
   console.log(`  ${customColor}${BOLD}${customLabel}${RESET}  avg ${BOLD}${fmtMs(sCustom.avg)}${RESET}  p95 ${BOLD}${fmtMs(sCustom.p95)}${RESET}  min ${BOLD}${fmtMs(sCustom.min)}${RESET}`);
 
   for (const ip of publicIps) {

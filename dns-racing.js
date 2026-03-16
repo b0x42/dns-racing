@@ -121,6 +121,7 @@ function printStats(store, elapsed) {
     );
   }
   lines.push(hr('└', '┴', '┘'));
+  lines.push(`  ${YELLOW}${BOLD}Stop the race with ESC or Ctrl+C${RESET}`);
 
   // Move cursor up to overwrite the previous table on all updates after the first
   if (tableLineCount > 0) process.stdout.write(`\x1b[${tableLineCount}A`);
@@ -201,7 +202,7 @@ function printDomainBreakdown() {
 
   console.log(`\n${BOLD}Per-domain breakdown${RESET} (${customColor}${customLabel}${RESET} vs ${publicColor}${publicLabel}${RESET})`);
   console.log(hr('┌', '┬', '┐'));
-  console.log(`│${cell('Domain', dCol)}│${cell(customLabel, msCol)}│${cell(publicLabel, msCol)}│${cell('Diff', diffCol)}│`);
+  console.log(`│ ${'Domain'.padEnd(dCol)} │${cell(customLabel, msCol)}│${cell(publicLabel, msCol)}│${cell('Diff', diffCol)}│`);
   console.log(hr('├', '┼', '┤'));
 
   for (const { domain, customAvg, publicAvg, diff } of rows) {
@@ -343,4 +344,14 @@ warmup().catch(err => {
 
   process.on('SIGINT',  shutdown);
   process.on('SIGTERM', shutdown); // handle kill / docker stop / systemd stop
+
+  // Listen for ESC key
+  if (process.stdin.isTTY) {
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    process.stdin.on('data', (key) => {
+      if (key[0] === 0x1b && key.length === 1) shutdown(); // ESC key
+      if (key[0] === 0x03) shutdown(); // Ctrl+C in raw mode
+    });
+  }
 });

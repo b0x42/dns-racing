@@ -87,7 +87,7 @@ function computeStats(results) {
 
 function printStats(store, elapsed) {
   const fmtMs = v => `${v.toFixed(1)}ms`;
-  const cols  = { server: 12, ok: 5, cache: 5, blocked: 7, err: 3, min: 7, avg: 7, p95: 7, max: 7 };
+  const cols  = { server: 12, ok: 6, cache: 6, blocked: 7, err: 5, min: 9, avg: 9, p95: 9, max: 9 };
   const hr    = (l, m, r) => l + Object.values(cols).map(w => '─'.repeat(w + 2)).join(m) + r;
   const cell  = (v, w) => ` ${String(v).padStart(w)} `;
 
@@ -150,7 +150,7 @@ function printVerdict(store) {
 
   if (!ranked.length) return;
 
-  const cols = { rank: 4, server: 12, avg: 7, p95: 7, min: 7, diff: 8 };
+  const cols = { rank: 4, server: 12, avg: 9, p95: 9, min: 9, diff: 10 };
   const hr   = (l, m, r) => l + Object.values(cols).map(w => '─'.repeat(w + 2)).join(m) + r;
   const cell = (v, w) => ` ${String(v).padStart(w)} `;
 
@@ -202,7 +202,7 @@ function printDomainBreakdown() {
   if (!rows.length) return;
 
   const fmtMs  = v => `${v.toFixed(1)}ms`;
-  const dCol   = 18, msCol = 7, diffCol = 8;
+  const dCol   = 18, msCol = 9, diffCol = 10;
   const hr     = (l, m, r) => `${l}${'─'.repeat(dCol + 2)}${m}${'─'.repeat(msCol + 2)}${m}${'─'.repeat(msCol + 2)}${m}${'─'.repeat(diffCol + 2)}${r}`;
   const cell   = (v, w) => ` ${String(v).padStart(w)} `;
 

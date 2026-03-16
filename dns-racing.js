@@ -128,35 +128,52 @@ function printStats(store, elapsed) {
   tableLineCount = lines.length;
 }
 
-// Compares custom DNS avg against each public resolver and prints a verdict per pair
+// Ranks all servers by avg latency and prints a podium table
 function printVerdict(store) {
-  const [customIp, ...publicIps] = Object.keys(SERVERS);
-  const sCustom = computeStats(store[customIp]);
-  if (!sCustom) return;
-
-  const { label: customLabel, color: customColor } = SERVERS[customIp];
   const fmtMs = v => `${v.toFixed(1)}ms`;
+  const ranks = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'];
+
+  // Build ranked list of all servers with stats
+  const ranked = Object.keys(SERVERS).map(ip => {
+    const s = computeStats(store[ip]);
+    if (!s) return null;
+    const { label, color } = SERVERS[ip];
+    return { label, color, avg: s.avg, p95: s.p95, min: s.min };
+  }).filter(Boolean).sort((a, b) => a.avg - b.avg);
+
+  if (!ranked.length) return;
+
+  const cols = { rank: 4, server: 12, avg: 9, p95: 9, min: 9, diff: 10 };
+  const hr   = (l, m, r) => l + Object.values(cols).map(w => '─'.repeat(w + 2)).join(m) + r;
+  const cell = (v, w) => ` ${String(v).padStart(w)} `;
 
   console.log(`\n${BOLD}Race Results${RESET}`);
-  console.log(`  ${customColor}${BOLD}${customLabel}${RESET}  avg ${BOLD}${fmtMs(sCustom.avg)}${RESET}  p95 ${BOLD}${fmtMs(sCustom.p95)}${RESET}  min ${BOLD}${fmtMs(sCustom.min)}${RESET}`);
+  console.log(hr('┌', '┬', '┐'));
+  console.log(
+    '│' + cell('Rank', cols.rank) +
+    '│' + cell('Server', cols.server) +
+    '│' + cell('Avg', cols.avg) +
+    '│' + cell('p95', cols.p95) +
+    '│' + cell('Min', cols.min) +
+    '│' + cell('Diff', cols.diff) + '│'
+  );
+  console.log(hr('├', '┼', '┤'));
 
-  for (const ip of publicIps) {
-    const s = computeStats(store[ip]);
-    if (!s) continue;
-    const { label, color } = SERVERS[ip];
-    const diff = s.avg - sCustom.avg;
-    const pct  = (Math.abs(diff) / Math.max(s.avg, sCustom.avg) * 100).toFixed(1); // % relative to the slower server
-
-    let verdict;
-    if (Math.abs(diff) < 0.5) {
-      verdict = `${YELLOW}Too close to call${RESET} — ${customColor}${customLabel}${RESET} ${fmtMs(sCustom.avg)} vs ${color}${label}${RESET} ${fmtMs(s.avg)}`;
-    } else if (diff > 0) {
-      verdict = `${customColor}${BOLD}${customLabel}${RESET} wins  ${BOLD}${fmtMs(sCustom.avg)}${RESET} vs ${fmtMs(s.avg)}  (${pct}% faster)`;
-    } else {
-      verdict = `${color}${BOLD}${label}${RESET} wins  ${BOLD}${fmtMs(s.avg)}${RESET} vs ${fmtMs(sCustom.avg)}  (${pct}% faster)`;
-    }
-    console.log(`  vs ${color}${label}${RESET}: ${verdict}`);
+  const fastest = ranked[0].avg;
+  for (let i = 0; i < ranked.length; i++) {
+    const { label, color, avg, p95, min } = ranked[i];
+    const diff = avg - fastest;
+    const diffStr = i === 0 ? '—' : `+${fmtMs(diff)}`;
+    console.log(
+      '│' + cell(ranks[i] || `${i + 1}th`, cols.rank) +
+      '│' + ` ${color}${BOLD}${label.padEnd(cols.server)}${RESET} ` +
+      '│' + cell(fmtMs(avg), cols.avg) +
+      '│' + cell(fmtMs(p95), cols.p95) +
+      '│' + cell(fmtMs(min), cols.min) +
+      '│' + cell(diffStr, cols.diff) + '│'
+    );
   }
+  console.log(hr('└', '┴', '┘'));
 }
 
 // Prints per-domain avg latency for custom DNS vs the first public resolver,

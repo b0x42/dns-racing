@@ -67,8 +67,12 @@ Per-domain breakdown (My DNS vs Cloudflare)
 
 ```
 Race Results
-  My DNS  avg 3.4ms  p95 8.1ms  min 0.3ms
-  vs Cloudflare: My DNS wins  3.4ms vs 12.1ms  (71.9% faster)
+┌──────┬──────────────┬───────────┬───────────┬───────────┬────────────┐
+│ Rank │       Server │       Avg │       p95 │       Min │       Diff │
+├──────┼──────────────┼───────────┼───────────┼───────────┼────────────┤
+│  1st │       My DNS │     3.4ms │     8.1ms │     0.3ms │          — │
+│  2nd │   Cloudflare │    12.1ms │    18.4ms │     8.5ms │     +8.7ms │
+└──────┴──────────────┴───────────┴───────────┴───────────┴────────────┘
 ```
 
 CSV: `dns_racing_<timestamp>.csv`

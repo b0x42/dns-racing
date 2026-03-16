@@ -202,7 +202,7 @@ function printDomainBreakdown() {
 
   console.log(`\n${BOLD}Per-domain breakdown${RESET} (${customColor}${customLabel}${RESET} vs ${publicColor}${publicLabel}${RESET})`);
   console.log(hr('┌', '┬', '┐'));
-  console.log(`│${cell('Domain', dCol)}│${cell(customLabel, msCol)}│${cell(publicLabel, msCol)}│${cell('Diff', diffCol)}│`);
+  console.log(`│ ${'Domain'.padEnd(dCol)} │${cell(customLabel, msCol)}│${cell(publicLabel, msCol)}│${cell('Diff', diffCol)}│`);
   console.log(hr('├', '┼', '┤'));
 
   for (const { domain, customAvg, publicAvg, diff } of rows) {

@@ -41,6 +41,12 @@ const DOMAINS = [
   'theguardian.com','medium.com',
 ];
 
+// Fisher-Yates shuffle — randomize domain order each run to avoid ordering bias
+for (let i = DOMAINS.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [DOMAINS[i], DOMAINS[j]] = [DOMAINS[j], DOMAINS[i]];
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const RESET = '\x1b[0m', BOLD = '\x1b[1m';
 const GREEN = '\x1b[32m', CYAN = '\x1b[36m', YELLOW = '\x1b[33m', MAGENTA = '\x1b[35m', BLUE = '\x1b[34m';

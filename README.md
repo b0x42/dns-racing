@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.jpg" width="256" alt="DNS Racing icon">
+  <img src="icon.jpg" width="200" alt="DNS Racing icon">
   <br>
   <strong><h1 align="center">DNS Racing</h1></strong>
 </p>

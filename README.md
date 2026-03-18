@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="icon.jpg" width="256" alt="DNS Racing icon">
-  <br>
-  <strong><h1 align="center">DNS Racing</h1></strong>
+  <img src="icon.jpg" width="256" alt="DNS Racing icon"><br>
+  <strong>DNS Racing</strong>
 </p>
 
 <p align="center">

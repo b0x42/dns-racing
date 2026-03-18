@@ -203,15 +203,15 @@ function printDomainBreakdown() {
   if (!rows.length) return;
 
   const fmtMs  = v => `${v.toFixed(1)}ms`;
-  const dCol = 18, msCol = 9, diffCol = 10;
-  const serverCols = ips.map(() => msCol);
-  const hr = (l, m, r) => l + '─'.repeat(dCol + 2) + ips.map(() => m + '─'.repeat(msCol + 2)).join('') + m + '─'.repeat(diffCol + 2) + r;
+  const dCol = 18, diffCol = 10;
+  const colW = ips.map(ip => Math.max(9, SERVERS[ip].label.length));
+  const hr = (l, m, r) => l + '─'.repeat(dCol + 2) + colW.map(w => m + '─'.repeat(w + 2)).join('') + m + '─'.repeat(diffCol + 2) + r;
   const cell = (v, w) => ` ${String(v).padStart(w)} `;
 
   const title = ips.map(ip => `${SERVERS[ip].color}${SERVERS[ip].label}${RESET}`).join(' vs ');
   console.log(`\n${BOLD}Per-domain breakdown${RESET} (${title})`);
   console.log(hr('┌', '┬', '┐'));
-  console.log(`│ ${'Domain'.padEnd(dCol)} │` + ips.map(ip => cell(SERVERS[ip].label, msCol) + '│').join('') + cell('Diff', diffCol) + '│');
+  console.log(`│ ${'Domain'.padEnd(dCol)} │` + ips.map((ip, i) => cell(SERVERS[ip].label, colW[i]) + '│').join('') + cell('Diff', diffCol) + '│');
   console.log(hr('├', '┼', '┤'));
 
   for (const { domain, avgs, diff } of rows) {
@@ -219,7 +219,7 @@ function printDomainBreakdown() {
     const diffColor = diff > 0.5 ? customColor : diff < -0.5 ? YELLOW : YELLOW;
     console.log(
       `│ ${domain.padEnd(dCol)} │` +
-      ips.map(ip => cell(fmtMs(avgs[ip]), msCol) + '│').join('') +
+      ips.map((ip, i) => cell(fmtMs(avgs[ip]), colW[i]) + '│').join('') +
       ` ${diffColor}${diffStr.padStart(diffCol)}${RESET} │`
     );
   }

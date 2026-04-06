@@ -11,7 +11,6 @@
 - [ ] 2.2 Implement `.env` file loading via `dotenvy::dotenv().ok()` before clap parsing
 - [ ] 2.3 Implement extra-dns parsing (comma-separated `ip:label` pairs, IP as label when omitted)
 - [ ] 2.4 Add validation: reject duplicate custom/public-dns IPs, reject non-positive RPS, reject invalid IPs
-- [ ] 2.5 Update `.env.example` with comments showing equivalent CLI flags
 
 ## 3. DNS Resolver Setup (`src/query.rs`)
 
@@ -57,7 +56,11 @@
 - [ ] 9.2 Handle ESC key via raw stdin on Unix TTY only; skip on Windows and non-TTY
 - [ ] 9.3 On shutdown: stop tick loop, print final stats, domain breakdown, verdict, flush CSV, exit
 
-## 10. Distribution
+## 10. Documentation
 
-- [ ] 10.1 Run `cargo dist init` to generate GitHub Actions release workflow targeting Linux (x86_64, aarch64 musl), macOS (x86_64, aarch64), Windows (x86_64)
-- [ ] 10.2 Update README for Rust: installation from releases, `cargo install`, and build-from-source instructions
+- [ ] 10.1 Update README: quick start with binary download / `cargo install` / build-from-source, updated config table with CLI flags, updated output examples with p99 column
+- [ ] 10.2 Update `.env.example` with comments showing equivalent CLI flags
+
+## 11. Distribution
+
+- [ ] 11.1 Run `cargo dist init` to generate GitHub Actions release workflow targeting Linux (x86_64, aarch64 musl), macOS (x86_64, aarch64), Windows (x86_64)

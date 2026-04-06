@@ -56,3 +56,9 @@ Query results flow from the main task to a dedicated CSV writer task via `tokio:
 - **[Measurement includes resolver client overhead]** → `Instant` timing wraps the full `resolver.lookup_ip()` call, not just network RTT. Mitigation: this is acceptable — we're measuring "how fast does the resolver respond to a real query from a real client," which is what users care about. The overhead is consistent and sub-microsecond.
 - **[Breaking change for existing users]** → Node.js users must switch to the binary. Mitigation: clear migration notes in README, keep `.env` variable names identical where possible.
 - **[Binary size]** → Rust binary with tokio + hickory will be ~5-10MB. Mitigation: LTO + strip in release profile. Acceptable for the distribution model.
+
+## Deferred / Future Work
+
+- **DNS-over-TLS/HTTPS (DoT/DoH)**: hickory-resolver supports TLS and HTTPS features behind feature flags. Would allow benchmarking encrypted DNS resolvers. Deferred — plain UDP/TCP covers the primary use case.
+- **Custom domain lists from file**: Allow users to provide their own domain list via `--domains-file`. Useful for testing resolver performance against site-specific traffic patterns.
+- **JSON output format**: Add `--output-format json` alongside CSV for easier integration with dashboards and scripts.

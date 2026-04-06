@@ -1,0 +1,22 @@
+[package]
+name = "dns-racing"
+version = "1.0.0"
+edition = "2021"
+description = "Race your custom DNS server against public resolvers with live latency stats"
+license = "MIT"
+repository = "https://github.com/b0x42/dns-racing"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+hickory-resolver = "0.25"
+clap = { version = "4", features = ["derive", "env"] }
+chrono = "0.4"
+rand = "0.8"
+dotenvy = "0.15"
+
+[profile.release]
+lto = true
+strip = true
+
+[target."cfg(unix)".dependencies]
+libc = "0.2.184"

@@ -10,7 +10,7 @@
 - [ ] 2.1 Define clap `Args` struct with all config parameters, env var fallback, and defaults per cli-config spec
 - [ ] 2.2 Implement `.env` file loading via `dotenvy::dotenv().ok()` before clap parsing
 - [ ] 2.3 Implement extra-dns parsing (comma-separated `ip:label` pairs, IP as label when omitted)
-- [ ] 2.4 Add validation: reject duplicate custom/cloudflare IPs, reject non-positive RPS
+- [ ] 2.4 Add validation: reject duplicate custom/public-dns IPs, reject non-positive RPS, reject invalid IPs
 - [ ] 2.5 Update `.env.example` with comments showing equivalent CLI flags
 
 ## 3. DNS Resolver Setup (`src/query.rs`)

@@ -5,7 +5,7 @@ The system SHALL execute `--warmup-rounds` full passes through all domains again
 
 #### Scenario: Warmup execution
 - **WHEN** the program starts after config parsing
-- **THEN** it runs the configured number of warmup rounds, querying all domains on all resolvers
+- **THEN** it runs the configured number of warmup rounds, iterating domains sequentially and querying all resolvers in parallel for each domain (matching Node.js behavior)
 
 #### Scenario: Warmup progress indication
 - **WHEN** warmup is in progress

@@ -16,7 +16,7 @@ DNS Racing measures sub-millisecond DNS resolver latency, but the Node.js runtim
 
 ### New Capabilities
 - `dns-query`: Async DNS query execution against configurable resolvers with per-query monotonic timing
-- `stats-engine`: Rolling window statistics with p50/p95/p99 percentiles, cache hit detection, and blocked domain tracking
+- `stats-engine`: Rolling window statistics with p95/p99 percentiles, cache hit detection, and blocked domain tracking
 - `live-display`: ANSI escape terminal output with live stats table, domain breakdown, and race verdict
 - `csv-export`: Timestamped CSV logging of all query results
 - `cli-config`: CLI argument parsing with env var fallback and `.env` file support

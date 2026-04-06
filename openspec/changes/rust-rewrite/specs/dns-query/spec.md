@@ -16,11 +16,15 @@ The system SHALL perform async DNS A-record lookups against each configured reso
 - **THEN** the system records the result as `error`
 
 ### Requirement: Parallel query dispatch across all resolvers
-The system SHALL fire queries for the same domain to all configured resolvers concurrently using `tokio::spawn`. Domains SHALL cycle round-robin from a shuffled list of 30 hardcoded domains.
+The system SHALL fire queries for the same domain to all configured resolvers concurrently using a `tokio::task::JoinSet`. The main task SHALL drain completed results from the `JoinSet` and update stats directly. Domains SHALL cycle round-robin from a shuffled list of 30 hardcoded domains.
 
 #### Scenario: Concurrent resolution
 - **WHEN** a tick fires at the configured RPS interval
-- **THEN** the system spawns one query task per resolver for the current domain, all executing in parallel
+- **THEN** the main task spawns one query per resolver into a JoinSet for the current domain, all executing in parallel
+
+#### Scenario: Result collection
+- **WHEN** spawned queries complete
+- **THEN** the main task collects results from the JoinSet, updates stats, and sends results to the CSV writer channel
 
 ### Requirement: Monotonic timing per query
 The system SHALL measure query latency using `std::time::Instant` (monotonic clock) to avoid wall-clock drift. Timing SHALL wrap only the `resolver.lookup_ip()` call.

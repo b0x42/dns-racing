@@ -11,7 +11,7 @@ The Node.js runtime introduces GC pauses and event loop contention that contamin
 - Single static binary distribution for Linux, macOS, and Windows via GitHub Releases
 - Feature parity with the Node.js version: live stats table, domain breakdown, verdict, CSV export
 - Enhanced stats: add p99 percentile
-- CLI flags with env var fallback and `.env` file support via `clap` + `dotenv`
+- CLI flags with env var fallback and `.env` file support via `clap` + `dotenvy`
 
 **Non-Goals:**
 - TUI framework (ratatui) — keep the same ANSI escape approach for simplicity
@@ -30,8 +30,10 @@ Provides a full async DNS client with protocol handling, retries, and TCP fallba
 **3. Resolver sharing: `Arc<TokioResolver>` per server**
 One resolver instance per DNS server, wrapped in `Arc` and cloned into spawned tasks. This avoids the `'static` lifetime issue with hickory-resolver's futures while sharing the internal connection pool. Alternative: create a new resolver per query — wasteful, loses connection reuse.
 
+**Data flow**: The main task owns all mutable state (stats `VecDeque`s, per-domain averages). Each tick, it spawns queries into a `JoinSet`, drains completed results, updates stats directly, and sends results to the CSV writer via mpsc. No mutex needed — stats never leave the main task. The display function borrows stats from the main task on the stats interval.
+
 **4. Config: `clap` derive with `env` feature**
-CLI flags with automatic env var fallback. Combined with `dotenv` crate to load `.env` files. This gives users three config layers: CLI flags > env vars > `.env` file > defaults. Alternative: dotenv-only (current approach) — loses CLI ergonomics.
+CLI flags with automatic env var fallback. Combined with `dotenvy` crate to load `.env` files. This gives users three config layers: CLI flags > env vars > `.env` file > defaults. Alternative: dotenv-only (current approach) — loses CLI ergonomics.
 
 **5. Stats: in-memory rolling window with manual percentile calculation**
 Keep the current rolling window approach (`VecDeque` bounded by `--window` size). Sort on demand for percentile extraction. Alternative: `hdrhistogram` crate — overkill for window sizes of 500-1000, adds dependency for minimal benefit.
@@ -43,7 +45,7 @@ Match the current Node.js approach: cursor movement + line clearing for live tab
 Split into `main.rs`, `config.rs`, `query.rs`, `stats.rs`, `display.rs`, `csv.rs`. The implementation will exceed 800 LOC and clean module boundaries make each file focused. Alternative: single `main.rs` — would work but becomes unwieldy at this scale.
 
 **8. CSV write concurrency: mpsc channel**
-Query tasks send results to a single CSV writer task via `tokio::sync::mpsc`. This avoids mutex contention on the file handle, preserves write ordering, and lets the writer buffer/flush efficiently. The channel also carries stats updates to avoid shared mutable state. Alternative: `Mutex<BufWriter<File>>` — simpler but adds contention under high RPS.
+Query results flow from the main task to a dedicated CSV writer task via `tokio::sync::mpsc`. The main task owns stats and sends a copy of each result to the channel for CSV writing. This keeps file I/O off the main task and avoids any shared mutable state. Alternative: `Mutex<BufWriter<File>>` — simpler but blocks the main task on disk I/O.
 
 **9. Cross-compilation: `cargo-dist` with GitHub Actions**
 `cargo-dist` generates release workflows that produce binaries for all target platforms. Alternative: manual `cross` setup — more maintenance, `cargo-dist` handles the matrix automatically.

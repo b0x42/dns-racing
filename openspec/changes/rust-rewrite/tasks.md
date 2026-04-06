@@ -1,6 +1,6 @@
 ## 1. Project Scaffold
 
-- [ ] 1.1 Create `Cargo.toml` with dependencies: tokio, hickory-resolver, clap (derive+env), chrono, rand, dotenv. Configure release profile with `lto = true`, `strip = true`
+- [ ] 1.1 Create `Cargo.toml` with dependencies: tokio, hickory-resolver, clap (derive+env), chrono, rand, dotenvy. Configure release profile with `lto = true`, `strip = true`
 - [ ] 1.2 Create module structure: `src/main.rs`, `src/config.rs`, `src/query.rs`, `src/stats.rs`, `src/display.rs`, `src/csv.rs`
 - [ ] 1.3 Update `.gitignore` to include `/target`; commit `Cargo.lock` (binary project)
 - [ ] 1.4 Delete Node.js files: `dns-racing.js`, `package.json`, `package-lock.json`; remove `node_modules/` from `.gitignore`
@@ -8,7 +8,7 @@
 ## 2. CLI Config (`src/config.rs`)
 
 - [ ] 2.1 Define clap `Args` struct with all config parameters, env var fallback, and defaults per cli-config spec
-- [ ] 2.2 Implement `.env` file loading via `dotenv::dotenv().ok()` before clap parsing
+- [ ] 2.2 Implement `.env` file loading via `dotenvy::dotenv().ok()` before clap parsing
 - [ ] 2.3 Implement extra-dns parsing (comma-separated `ip:label` pairs, IP as label when omitted)
 - [ ] 2.4 Add validation: reject duplicate custom/cloudflare IPs, reject non-positive RPS
 - [ ] 2.5 Update `.env.example` with comments showing equivalent CLI flags
@@ -22,7 +22,7 @@
 
 - [ ] 4.1 Implement `query(resolver, domain)` async function that times `resolver.lookup_ip()` with `Instant` and returns `(Duration, Status)` where Status is `Ok`/`Nxdomain`/`Error`
 - [ ] 4.2 Implement domain list with Fisher-Yates shuffle at startup
-- [ ] 4.3 Implement tick loop: `tokio::time::interval(1s / rps)` cycling domains round-robin, spawning parallel queries per server per tick
+- [ ] 4.3 Implement tick loop: `tokio::time::interval(1s / rps)` cycling domains round-robin, spawning parallel queries into a `JoinSet` per tick, draining results into main-task-owned stats and sending to CSV channel
 
 ## 5. Stats Engine (`src/stats.rs`)
 

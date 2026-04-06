@@ -19,7 +19,7 @@ The system SHALL accept configuration via CLI flags, with automatic fallback to 
 The system SHALL support these parameters with defaults:
 - `--custom-dns` / `CUSTOM_DNS` (default: `192.168.0.5`)
 - `--custom-dns-label` / `CUSTOM_DNS_LABEL` (default: `My DNS`)
-- `--cloudflare` / `CLOUDFLARE` (default: `1.1.1.1`)
+- `--public-dns` / `CLOUDFLARE` (default: `1.1.1.1`) — primary public resolver (env var kept as `CLOUDFLARE` for backward compat)
 - `--extra-dns` / `EXTRA_DNS` (default: empty)
 - `--rps` / `RPS` (default: 25)
 - `--stats-every` / `STATS_EVERY` (default: 5000ms)
@@ -44,12 +44,16 @@ The system SHALL parse `--extra-dns` as a comma-separated list of `ip:label` pai
 - **THEN** the resolver is configured with `8.8.8.8` as both the IP and the display label
 
 ### Requirement: Validation
-The system SHALL exit with an error if `--custom-dns` and `--cloudflare` are the same IP, or if `--rps` is not positive.
+The system SHALL exit with an error if `--custom-dns` and `--public-dns` are the same IP, if `--rps` is not positive, or if any DNS IP (custom, public, or extra) is not a valid IPv4/IPv6 address.
 
 #### Scenario: Duplicate IP rejection
-- **WHEN** custom DNS and Cloudflare IPs are identical
+- **WHEN** custom DNS and public DNS IPs are identical
 - **THEN** the system exits with an error message
 
 #### Scenario: Invalid RPS
 - **WHEN** `--rps 0` or a negative value is provided
 - **THEN** the system exits with an error message
+
+#### Scenario: Invalid IP address
+- **WHEN** a DNS IP cannot be parsed as a valid IPv4 or IPv6 address
+- **THEN** the system exits with an error message identifying the invalid IP

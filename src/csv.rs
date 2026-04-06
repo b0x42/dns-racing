@@ -16,13 +16,23 @@ pub fn make_path() -> String {
 }
 
 pub async fn writer_task(path: String, mut rx: mpsc::UnboundedReceiver<Row>) {
-    let mut file = std::io::BufWriter::new(std::fs::File::create(&path).unwrap());
-    writeln!(file, "timestamp,server,domain,latency_ms,status").unwrap();
+    let file = match std::fs::File::create(&path) {
+        Ok(f) => f,
+        Err(e) => {
+            eprintln!("Error: Could not create CSV file {path}: {e}");
+            return;
+        }
+    };
+    let mut file = std::io::BufWriter::new(file);
+    let _ = writeln!(file, "timestamp,server,domain,latency_ms,status");
 
     while let Some(row) = rx.recv().await {
         let ts = Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
-        writeln!(file, "{},{},{},{:.2},{}", ts, row.server_ip, row.domain, row.latency_ms, row.status).unwrap();
+        if writeln!(file, "{},{},{},{:.2},{}", ts, row.server_ip, row.domain, row.latency_ms, row.status).is_err() {
+            eprintln!("Warning: CSV write failed, stopping CSV logging");
+            break;
+        }
     }
 
-    file.flush().unwrap();
+    let _ = file.flush();
 }

@@ -63,7 +63,7 @@ pub fn build_servers(cfg: &Args) -> Vec<Server> {
             resolver: build_resolver(cfg.custom_dns, cfg.timeout),
         },
         Server {
-            label: "Cloudflare".to_string(),
+            label: cfg.public_dns_label.clone(),
             ip: cfg.public_dns.to_string(),
             color: "\x1b[32m",
             resolver: build_resolver(cfg.public_dns, cfg.timeout),
@@ -91,11 +91,7 @@ pub async fn resolve(resolver: &TokioResolver, domain: &str, timeout_ms: u64) ->
     let status = match result {
         Ok(Ok(_)) => Status::Ok,
         Ok(Err(e)) => {
-            if e.to_string().contains("no record found") || e.to_string().contains("NXDomain") {
-                Status::Nxdomain
-            } else {
-                Status::Error
-            }
+            if e.is_no_records_found() { Status::Nxdomain } else { Status::Error }
         }
         Err(_) => Status::Error,
     };

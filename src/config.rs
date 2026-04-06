@@ -2,7 +2,7 @@ use clap::Parser;
 use std::net::IpAddr;
 
 #[derive(Parser)]
-#[command(name = "dns-racing", about = "Race your DNS server against public resolvers")]
+#[command(name = "dns-racing", version, about = "Race your DNS server against public resolvers")]
 pub struct Args {
     #[arg(long, env = "CUSTOM_DNS", default_value = "192.168.0.5")]
     pub custom_dns: IpAddr,
@@ -12,6 +12,9 @@ pub struct Args {
 
     #[arg(long = "public-dns", env = "CLOUDFLARE", default_value = "1.1.1.1")]
     pub public_dns: IpAddr,
+
+    #[arg(long, env = "PUBLIC_DNS_LABEL", default_value = "Cloudflare")]
+    pub public_dns_label: String,
 
     #[arg(long, env = "EXTRA_DNS", default_value = "")]
     pub extra_dns: String,

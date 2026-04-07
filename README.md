@@ -29,18 +29,18 @@ chmod +x dns-racing
 ./dns-racing --custom-dns 192.168.0.5
 ```
 
+### Install via cargo
+
+```bash
+cargo install --git https://github.com/b0x42/dns-racing.git
+```
+
 ### Build from source
 
 ```bash
 git clone https://github.com/b0x42/dns-racing.git && cd dns-racing
 cargo build --release
 cp target/release/dns-racing .
-```
-
-### Install via cargo
-
-```bash
-cargo install --git https://github.com/b0x42/dns-racing.git
 ```
 
 Press `Ctrl+C` or `ESC` to stop and flush final stats, breakdown, verdict, and CSV.

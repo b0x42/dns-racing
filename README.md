@@ -45,6 +45,27 @@ cp target/release/dns-racing .
 
 Press `Ctrl+C` or `ESC` to stop and flush final stats, breakdown, verdict, and CSV.
 
+## Usage
+
+Race your Pi-hole against Cloudflare (default):
+
+```bash
+dns-racing --custom-dns 192.168.1.53 --custom-dns-label Pi-hole
+```
+
+Race AdGuard against Cloudflare, Google, and Quad9 at once:
+
+```bash
+dns-racing --custom-dns 192.168.1.53 --custom-dns-label AdGuard \
+  --extra-dns "8.8.8.8:Google,9.9.9.9:Quad9"
+```
+
+High-frequency test with a larger rolling window and faster stats:
+
+```bash
+dns-racing --custom-dns 192.168.1.53 --rps 50 --window 1000 --stats-every 2000
+```
+
 ## Configuration
 
 All options can be set via CLI flags, environment variables, or a `.env` file. CLI flags take precedence over env vars.

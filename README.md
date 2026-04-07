@@ -11,12 +11,12 @@
 
 Ever wondered how your DNS server compares to cloud DNS? This tool fires parallel lookups at your custom server (AdGuard, Pi-hole, Unbound, etc.) and public resolvers simultaneously, showing live latency stats so you can see exactly how they stack up.
 
-- Compare your avg response time to one or more cloud DNS servers (Cloudflare, Google, Quad9, etc.)
-- Deterministic measurement — Rust binary with monotonic timing, no GC pauses, no event loop noise
-- Smart measurement — warms up caches before recording, separates blocked domains from errors, and flags cache hits
-- Instant results with a detailed breakdown per domain
-- Auto CSV logging so you can analyse results with any tool you like
-- Single static binary — no runtime dependencies
+- 🏁 **Race your DNS** — Compare avg response time to one or more cloud resolvers (Cloudflare, Google, Quad9, etc.)
+- 🎯 **Deterministic measurement** — Rust binary with monotonic timing, no GC pauses, no event loop noise
+- 🧠 **Smart measurement** — Warms up caches before recording, separates blocked domains from errors, and flags cache hits
+- 📊 **Instant results** — Detailed breakdown per domain with live latency stats
+- 📁 **Auto CSV logging** — Analyse results with any tool you like
+- 📦 **Single static binary** — No runtime dependencies
 
 ## Quick Start
 

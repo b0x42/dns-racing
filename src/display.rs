@@ -26,7 +26,7 @@ pub fn banner(cfg: &Args, servers: &[Server], csv_path: &str) {
 
 pub fn live_stats(store: &Store, servers: &[Server], elapsed: Duration, prev_lines: usize) -> usize {
     let mut out = io::stdout().lock();
-    let cols = [12, 6, 6, 7, 5, 9, 9, 9, 9, 9];
+    let cols = [12, 6, 7, 5, 9, 9, 9, 9, 9];
     let hr = |l: &str, m: &str, r: &str| -> String {
         let inner: Vec<String> = cols.iter().map(|w| "─".repeat(w + 2)).collect();
         format!("{l}{}{r}", inner.join(m))
@@ -38,27 +38,26 @@ pub fn live_stats(store: &Store, servers: &[Server], elapsed: Duration, prev_lin
     lines.push(format!("{BOLD}Stats after {}s{RESET}", elapsed.as_secs()));
     lines.push(hr("┌", "┬", "┐"));
     lines.push(format!(
-        "│{}│{}│{}│{}│{}│{}│{}│{}│{}│{}│",
-        cell("Server", cols[0]), cell("OK", cols[1]), cell("Cache", cols[2]),
-        cell("Blocked", cols[3]), cell("Err", cols[4]), cell("Min", cols[5]),
-        cell("Avg", cols[6]), cell("p95", cols[7]), cell("p99", cols[8]), cell("Max", cols[9])
+        "│{}│{}│{}│{}│{}│{}│{}│{}│{}│",
+        cell("Server", cols[0]), cell("OK", cols[1]),
+        cell("Blocked", cols[2]), cell("Err", cols[3]), cell("Min", cols[4]),
+        cell("Avg", cols[5]), cell("p95", cols[6]), cell("p99", cols[7]), cell("Max", cols[8])
     ));
     lines.push(hr("├", "┼", "┤"));
 
     for (i, s) in servers.iter().enumerate() {
         if let Some(st) = store.compute(i) {
             lines.push(format!(
-                "│ {}{BOLD}{:<w$}{RESET} │{}│{}│{}│{}│{}│{}│{}│{}│{}│",
+                "│ {}{BOLD}{:<w$}{RESET} │{}│{}│{}│{}│{}│{}│{}│{}│",
                 s.color, s.label,
                 cell(&st.ok.to_string(), cols[1]),
-                cell(&st.cache_hits.to_string(), cols[2]),
-                cell(&st.blocked.to_string(), cols[3]),
-                cell(&st.errors.to_string(), cols[4]),
-                cell(&fmt_ms(st.min), cols[5]),
-                cell(&fmt_ms(st.avg), cols[6]),
-                cell(&fmt_ms(st.p95), cols[7]),
-                cell(&fmt_ms(st.p99), cols[8]),
-                cell(&fmt_ms(st.max), cols[9]),
+                cell(&st.blocked.to_string(), cols[2]),
+                cell(&st.errors.to_string(), cols[3]),
+                cell(&fmt_ms(st.min), cols[4]),
+                cell(&fmt_ms(st.avg), cols[5]),
+                cell(&fmt_ms(st.p95), cols[6]),
+                cell(&fmt_ms(st.p99), cols[7]),
+                cell(&fmt_ms(st.max), cols[8]),
                 w = cols[0],
             ));
         } else {

@@ -8,7 +8,7 @@ repository = "https://github.com/b0x42/dns-racing"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
-hickory-resolver = "0.25"
+hickory-resolver = "0.26"
 clap = { version = "4", features = ["derive", "env"] }
 chrono = "0.4"
 rand = "0.9"

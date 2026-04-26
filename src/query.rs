@@ -48,6 +48,7 @@ fn build_resolver(ip: IpAddr, timeout_ms: u64) -> Arc<TokioResolver> {
     let mut opts = ResolverOpts::default();
     opts.timeout = Duration::from_millis(timeout_ms);
     opts.attempts = 1;
+    opts.cache_size = 0;
     let resolver = Resolver::builder_with_config(cfg, TokioConnectionProvider::default())
         .with_options(opts)
         .build();

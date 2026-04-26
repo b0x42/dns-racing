@@ -51,7 +51,10 @@ impl Store {
 
         if ok {
             let key = (domain.to_string(), server_idx);
-            let avg = self.domain_avgs.entry(key).or_insert(DomainAvg { sum: 0.0, count: 0 });
+            let avg = self
+                .domain_avgs
+                .entry(key)
+                .or_insert(DomainAvg { sum: 0.0, count: 0 });
             avg.sum += ms;
             avg.count += 1;
         }
@@ -73,7 +76,9 @@ impl Store {
             }
         }
 
-        if ok_ms.is_empty() { return None; }
+        if ok_ms.is_empty() {
+            return None;
+        }
 
         ok_ms.sort_by(|a, b| a.partial_cmp(b).unwrap());
         let len = ok_ms.len();

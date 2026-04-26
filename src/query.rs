@@ -1,8 +1,8 @@
 use crate::config::{self, Args};
+use hickory_resolver::Resolver;
 use hickory_resolver::config::{NameServerConfig, ResolverConfig, ResolverOpts};
 use hickory_resolver::name_server::TokioConnectionProvider;
 use hickory_resolver::proto::xfer::Protocol;
-use hickory_resolver::Resolver;
 use rand::seq::SliceRandom;
 use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
@@ -70,7 +70,10 @@ pub fn build_servers(cfg: &Args) -> Vec<Server> {
             resolver: build_resolver(cfg.public_dns, cfg.timeout),
         },
     ];
-    for (i, extra) in config::parse_extra_dns(&cfg.extra_dns).into_iter().enumerate() {
+    for (i, extra) in config::parse_extra_dns(&cfg.extra_dns)
+        .into_iter()
+        .enumerate()
+    {
         servers.push(Server {
             label: extra.label,
             ip: extra.ip.to_string(),
@@ -92,7 +95,11 @@ pub async fn resolve(resolver: &TokioResolver, domain: &str, timeout_ms: u64) ->
     let status = match result {
         Ok(Ok(_)) => Status::Ok,
         Ok(Err(e)) => {
-            if e.is_no_records_found() { Status::Nxdomain } else { Status::Error }
+            if e.is_no_records_found() {
+                Status::Nxdomain
+            } else {
+                Status::Error
+            }
         }
         Err(_) => Status::Error,
     };
@@ -100,14 +107,36 @@ pub async fn resolve(resolver: &TokioResolver, domain: &str, timeout_ms: u64) ->
 }
 
 const DOMAINS: &[&str] = &[
-    "google.com",     "youtube.com",    "facebook.com",   "twitter.com",
-    "instagram.com",  "reddit.com",     "github.com",     "stackoverflow.com",
-    "amazon.com",     "netflix.com",    "wikipedia.org",  "cloudflare.com",
-    "apple.com",      "microsoft.com",  "linkedin.com",   "twitch.tv",
-    "discord.com",    "spotify.com",    "tiktok.com",     "whatsapp.com",
-    "zoom.us",        "dropbox.com",    "slack.com",      "heise.de",
-    "spiegel.de",     "bbc.com",        "nytimes.com",    "reuters.com",
-    "theguardian.com","medium.com",
+    "google.com",
+    "youtube.com",
+    "facebook.com",
+    "twitter.com",
+    "instagram.com",
+    "reddit.com",
+    "github.com",
+    "stackoverflow.com",
+    "amazon.com",
+    "netflix.com",
+    "wikipedia.org",
+    "cloudflare.com",
+    "apple.com",
+    "microsoft.com",
+    "linkedin.com",
+    "twitch.tv",
+    "discord.com",
+    "spotify.com",
+    "tiktok.com",
+    "whatsapp.com",
+    "zoom.us",
+    "dropbox.com",
+    "slack.com",
+    "heise.de",
+    "spiegel.de",
+    "bbc.com",
+    "nytimes.com",
+    "reuters.com",
+    "theguardian.com",
+    "medium.com",
 ];
 
 pub fn shuffled_domains() -> Vec<String> {

@@ -1,14 +1,13 @@
 use crate::config::{self, Args};
 use hickory_resolver::Resolver;
-use hickory_resolver::config::{NameServerConfig, ResolverConfig, ResolverOpts};
-use hickory_resolver::name_server::TokioConnectionProvider;
-use hickory_resolver::proto::xfer::Protocol;
+use hickory_resolver::config::{ConnectionConfig, NameServerConfig, ResolverConfig, ResolverOpts};
+use hickory_resolver::net::runtime::TokioRuntimeProvider;
 use rand::seq::SliceRandom;
-use std::net::{IpAddr, SocketAddr};
+use std::net::IpAddr;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-pub type TokioResolver = Resolver<TokioConnectionProvider>;
+pub type TokioResolver = Resolver<TokioRuntimeProvider>;
 
 pub struct Server {
     pub label: String,
@@ -42,16 +41,16 @@ pub struct QueryResult {
 const EXTRA_COLORS: &[&str] = &["\x1b[35m", "\x1b[34m", "\x1b[33m"];
 
 fn build_resolver(ip: IpAddr, timeout_ms: u64) -> Arc<TokioResolver> {
-    let addr = SocketAddr::new(ip, 53);
-    let ns = NameServerConfig::new(addr, Protocol::Udp);
+    let ns = NameServerConfig::new(ip, false, vec![ConnectionConfig::udp()]);
     let cfg = ResolverConfig::from_parts(None, vec![], vec![ns]);
     let mut opts = ResolverOpts::default();
     opts.timeout = Duration::from_millis(timeout_ms);
     opts.attempts = 1;
     opts.cache_size = 0;
-    let resolver = Resolver::builder_with_config(cfg, TokioConnectionProvider::default())
+    let resolver = Resolver::builder_with_config(cfg, TokioRuntimeProvider::default())
         .with_options(opts)
-        .build();
+        .build()
+        .expect("failed to build resolver");
     Arc::new(resolver)
 }
 

@@ -1,3 +1,5 @@
 *.csv
 .env
 /target
+.claude
+.kiro

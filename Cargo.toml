@@ -19,4 +19,4 @@ lto = true
 strip = true
 
 [target."cfg(unix)".dependencies]
-libc = "0.2.184"
+libc = "0.2.186"

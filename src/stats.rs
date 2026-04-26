@@ -5,12 +5,10 @@ pub struct Entry {
     pub ms: f64,
     pub ok: bool,
     pub blocked: bool,
-    pub cache_hit: bool,
 }
 
 pub struct Computed {
     pub ok: usize,
-    pub cache_hits: usize,
     pub blocked: usize,
     pub errors: usize,
     pub min: f64,
@@ -40,17 +38,16 @@ impl Store {
         }
     }
 
-    pub fn record(&mut self, server_idx: usize, domain: &str, result: &QueryResult, cache_hit_ms: f64) {
+    pub fn record(&mut self, server_idx: usize, domain: &str, result: &QueryResult) {
         let ms = result.duration.as_secs_f64() * 1000.0;
         let ok = result.status == Status::Ok;
         let blocked = result.status == Status::Nxdomain;
-        let cache_hit = ok && ms < cache_hit_ms;
 
         let window = &mut self.windows[server_idx];
         if window.len() >= self.window_size {
             window.pop_front();
         }
-        window.push_back(Entry { ms, ok, blocked, cache_hit });
+        window.push_back(Entry { ms, ok, blocked });
 
         if ok {
             let key = (domain.to_string(), server_idx);
@@ -65,12 +62,10 @@ impl Store {
         let mut ok_ms = Vec::new();
         let mut blocked = 0;
         let mut errors = 0;
-        let mut cache_hits = 0;
 
         for e in window {
             if e.ok {
                 ok_ms.push(e.ms);
-                if e.cache_hit { cache_hits += 1; }
             } else if e.blocked {
                 blocked += 1;
             } else {
@@ -86,7 +81,6 @@ impl Store {
 
         Some(Computed {
             ok: len,
-            cache_hits,
             blocked,
             errors,
             min: ok_ms[0],

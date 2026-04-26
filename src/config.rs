@@ -34,8 +34,6 @@ pub struct Args {
     #[arg(long, env = "WARMUP_ROUNDS", default_value = "2")]
     pub warmup_rounds: u32,
 
-    #[arg(long, env = "CACHE_HIT_MS", default_value = "1.0")]
-    pub cache_hit_ms: f64,
 }
 
 pub struct ExtraDns {

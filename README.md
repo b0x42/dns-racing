@@ -81,7 +81,6 @@ All options can be set via CLI flags, environment variables, or a `.env` file. C
 | `--timeout` | `TIMEOUT` | `5000` | Query timeout in ms |
 | `--window` | `WINDOW` | `500` | Rolling window size (results per server) |
 | `--warmup-rounds` | `WARMUP_ROUNDS` | `2` | Domain passes before recording starts |
-| `--cache-hit-ms` | `CACHE_HIT_MS` | `1.0` | Threshold in ms for cache hit detection |
 
 You can also use a `.env` file:
 

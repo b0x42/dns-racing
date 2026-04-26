@@ -22,7 +22,7 @@ pub struct Args {
     #[arg(long, env = "RPS", default_value = "25")]
     pub rps: u32,
 
-    #[arg(long, env = "STATS_EVERY", default_value = "5000")]
+    #[arg(long, env = "STATS_EVERY", default_value = "1000")]
     pub stats_every: u64,
 
     #[arg(long, env = "TIMEOUT", default_value = "5000")]

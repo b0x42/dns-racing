@@ -77,7 +77,7 @@ All options can be set via CLI flags, environment variables, or a `.env` file. C
 | `--public-dns` | `CLOUDFLARE` | `1.1.1.1` | Primary public resolver |
 | `--extra-dns` | `EXTRA_DNS` | _(empty)_ | Additional resolvers, e.g. `8.8.8.8:Google,9.9.9.9:Quad9` |
 | `--rps` | `RPS` | `25` | Queries per second per server |
-| `--stats-every` | `STATS_EVERY` | `5000` | ms between live stat prints |
+| `--stats-every` | `STATS_EVERY` | `1000` | ms between live stat prints |
 | `--timeout` | `TIMEOUT` | `5000` | Query timeout in ms |
 | `--window` | `WINDOW` | `500` | Rolling window size (results per server) |
 | `--warmup-rounds` | `WARMUP_ROUNDS` | `2` | Domain passes before recording starts |

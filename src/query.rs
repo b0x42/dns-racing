@@ -118,7 +118,7 @@ pub fn shuffled_domains() -> Vec<String> {
 
 pub async fn warmup(cfg: &Args, servers: &[Server]) -> Result<(), String> {
     let total = DOMAINS.len() * cfg.warmup_rounds as usize;
-    eprint!("  Warming up cache ({total} queries per server)...");
+    eprint!("  Warming up server caches ({total} queries per server)...");
 
     let mut error_counts = vec![0usize; servers.len()];
     let total_queries = total;

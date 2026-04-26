@@ -77,11 +77,10 @@ All options can be set via CLI flags, environment variables, or a `.env` file. C
 | `--public-dns` | `CLOUDFLARE` | `1.1.1.1` | Primary public resolver |
 | `--extra-dns` | `EXTRA_DNS` | _(empty)_ | Additional resolvers, e.g. `8.8.8.8:Google,9.9.9.9:Quad9` |
 | `--rps` | `RPS` | `25` | Queries per second per server |
-| `--stats-every` | `STATS_EVERY` | `5000` | ms between live stat prints |
+| `--stats-every` | `STATS_EVERY` | `1000` | ms between live stat prints |
 | `--timeout` | `TIMEOUT` | `5000` | Query timeout in ms |
 | `--window` | `WINDOW` | `500` | Rolling window size (results per server) |
 | `--warmup-rounds` | `WARMUP_ROUNDS` | `2` | Domain passes before recording starts |
-| `--cache-hit-ms` | `CACHE_HIT_MS` | `1.0` | Threshold in ms for cache hit detection |
 
 You can also use a `.env` file:
 
@@ -94,35 +93,39 @@ cp .env.example .env   # edit to your liking
 
 ```
 Stats after 10s
-┌────────────┬─────┬───────┬─────────┬─────┬───────┬───────┬───────┬───────┬────────┐
-│     Server │  OK │ Cache │ Blocked │ Err │   Min │   Avg │   p95 │   p99 │    Max │
-├────────────┼─────┼───────┼─────────┼─────┼───────┼───────┼───────┼───────┼────────┤
-│     My DNS │ 232 │    18 │       9 │   0 │ 0.3ms │ 3.4ms │ 8.1ms │12.5ms │ 22.3ms │
-│ Cloudflare │ 250 │     0 │       0 │   0 │ 8.5ms │12.1ms │18.4ms │25.1ms │ 35.6ms │
-└────────────┴─────┴───────┴─────────┴─────┴───────┴───────┴───────┴───────┴────────┘
+┌──────────────┬─────┬─────────┬─────┬────────┬────────┬────────┬────────┬────────┐
+│       Server │  OK │ Blocked │ Err │    Min │    Avg │    p95 │    p99 │    Max │
+├──────────────┼─────┼─────────┼─────┼────────┼────────┼────────┼────────┼────────┤
+│       My DNS │ 232 │       9 │   0 │  3.9ms │  6.1ms │  8.6ms │ 12.4ms │ 22.3ms │
+│   Cloudflare │ 250 │       0 │   0 │  6.2ms │  8.3ms │ 11.7ms │ 16.4ms │ 19.9ms │
+│       Google │ 250 │       0 │   0 │ 15.0ms │ 19.6ms │ 23.9ms │ 28.8ms │ 38.5ms │
+│        Quad9 │ 250 │       0 │   0 │  5.8ms │  7.9ms │ 10.4ms │ 16.2ms │ 32.1ms │
+└──────────────┴─────┴─────────┴─────┴────────┴────────┴────────┴────────┴────────┘
   Stop the race with ESC or Ctrl+C
 ```
 
 ```
-Per-domain breakdown (My DNS vs Cloudflare)
-┌──────────────────┬───────┬────────────┬─────────┐
-│ Domain           │ My DNS│ Cloudflare │    Diff │
-├──────────────────┼───────┼────────────┼─────────┤
-│ github.com       │ 1.1ms │     14.3ms │ +13.2ms │
-│ wikipedia.org    │ 2.4ms │     11.8ms │  +9.4ms │
-│ amazon.com       │ 9.8ms │     10.2ms │  +0.4ms │
-│ nytimes.com      │13.1ms │      9.7ms │  -3.4ms │
-└──────────────────┴───────┴────────────┴─────────┘
+Per-domain breakdown (My DNS vs Cloudflare vs Google vs Quad9)
+┌───────────────┬──────────┬────────────┬─────────┬─────────┬─────────┐
+│ Domain        │   My DNS │ Cloudflare │  Google │   Quad9 │    Diff │
+├───────────────┼──────────┼────────────┼─────────┼─────────┼─────────┤
+│ github.com    │    6.0ms │      8.5ms │  21.6ms │   8.1ms │ +15.6ms │
+│ wikipedia.org │    6.1ms │      7.8ms │  20.4ms │   7.6ms │ +14.3ms │
+│ amazon.com    │    6.3ms │      8.0ms │  18.5ms │   7.7ms │ +12.2ms │
+│ nytimes.com   │    6.0ms │      9.1ms │  19.1ms │   7.5ms │ +13.1ms │
+└───────────────┴──────────┴────────────┴─────────┴─────────┴─────────┘
 ```
 
 ```
 Race Results
-┌──────┬────────────┬───────┬───────┬───────┬────────┐
-│ Rank │     Server │   Avg │   p95 │   Min │   Diff │
-├──────┼────────────┼───────┼───────┼───────┼────────┤
-│  1st │     My DNS │ 3.4ms │ 8.1ms │ 0.3ms │      — │
-│  2nd │ Cloudflare │12.1ms │18.4ms │ 8.5ms │ +8.7ms │
-└──────┴────────────┴───────┴───────┴───────┴────────┘
+┌──────┬────────────┬────────┬────────┬────────┬─────────┐
+│ Rank │     Server │    Avg │    p95 │    Min │    Diff │
+├──────┼────────────┼────────┼────────┼────────┼─────────┤
+│  1st │     My DNS │  6.1ms │  8.6ms │  3.9ms │       — │
+│  2nd │      Quad9 │  7.9ms │ 10.4ms │  5.8ms │  +1.8ms │
+│  3rd │ Cloudflare │  8.3ms │ 11.7ms │  6.2ms │  +2.2ms │
+│  4th │     Google │ 19.6ms │ 23.9ms │ 15.0ms │ +13.5ms │
+└──────┴────────────┴────────┴────────┴────────┴─────────┘
 ```
 
 CSV: `dns_racing_<timestamp>.csv`

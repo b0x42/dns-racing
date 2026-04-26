@@ -1,3 +1,6 @@
 *.csv
 .env
 /target
+.claude
+.kiro
+.kilocode

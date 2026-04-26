@@ -42,7 +42,7 @@ async fn main() {
             biased;
             _ = &mut shutdown => { break; }
             Some(Ok((idx, domain, result))) = set.join_next(), if !set.is_empty() => {
-                stats_store.record(idx, &domain, &result, cfg.cache_hit_ms);
+                stats_store.record(idx, &domain, &result);
                 let _ = csv_tx.send(csv::Row {
                     server_ip: servers[idx].ip.clone(),
                     domain: domain.to_string(),

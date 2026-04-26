@@ -2,7 +2,11 @@ use clap::Parser;
 use std::net::IpAddr;
 
 #[derive(Parser)]
-#[command(name = "dns-racing", version, about = "Race your DNS server against public resolvers")]
+#[command(
+    name = "dns-racing",
+    version,
+    about = "Race your DNS server against public resolvers"
+)]
 pub struct Args {
     #[arg(long, env = "CUSTOM_DNS", default_value = "192.168.0.5")]
     pub custom_dns: IpAddr,
@@ -22,7 +26,7 @@ pub struct Args {
     #[arg(long, env = "RPS", default_value = "25")]
     pub rps: u32,
 
-    #[arg(long, env = "STATS_EVERY", default_value = "5000")]
+    #[arg(long, env = "STATS_EVERY", default_value = "1000")]
     pub stats_every: u64,
 
     #[arg(long, env = "TIMEOUT", default_value = "5000")]
@@ -33,9 +37,6 @@ pub struct Args {
 
     #[arg(long, env = "WARMUP_ROUNDS", default_value = "2")]
     pub warmup_rounds: u32,
-
-    #[arg(long, env = "CACHE_HIT_MS", default_value = "1.0")]
-    pub cache_hit_ms: f64,
 }
 
 pub struct ExtraDns {
@@ -51,7 +52,9 @@ pub fn parse() -> Args {
         std::process::exit(1);
     }
     if args.custom_dns == args.public_dns {
-        eprintln!("Error: CUSTOM_DNS and public DNS are the same IP. Set them to different servers.");
+        eprintln!(
+            "Error: CUSTOM_DNS and public DNS are the same IP. Set them to different servers."
+        );
         std::process::exit(1);
     }
     args

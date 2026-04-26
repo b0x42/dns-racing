@@ -28,7 +28,13 @@ pub async fn writer_task(path: String, mut rx: mpsc::UnboundedReceiver<Row>) {
 
     while let Some(row) = rx.recv().await {
         let ts = Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
-        if writeln!(file, "{},{},{},{:.2},{}", ts, row.server_ip, row.domain, row.latency_ms, row.status).is_err() {
+        if writeln!(
+            file,
+            "{},{},{},{:.2},{}",
+            ts, row.server_ip, row.domain, row.latency_ms, row.status
+        )
+        .is_err()
+        {
             eprintln!("Warning: CSV write failed, stopping CSV logging");
             break;
         }

@@ -140,7 +140,7 @@ const DOMAINS: &[&str] = &[
 
 pub fn shuffled_domains() -> Vec<String> {
     let mut domains: Vec<String> = DOMAINS.iter().map(|s| s.to_string()).collect();
-    domains.shuffle(&mut rand::thread_rng());
+    domains.shuffle(&mut rand::rng());
     domains
 }
 

@@ -11,7 +11,7 @@ tokio = { version = "1", features = ["full"] }
 hickory-resolver = "0.26"
 clap = { version = "4", features = ["derive", "env"] }
 chrono = "0.4"
-rand = "0.8"
+rand = "0.9"
 dotenvy = "0.15"
 
 [profile.release]
@@ -19,4 +19,4 @@ lto = true
 strip = true
 
 [target."cfg(unix)".dependencies]
-libc = "0.2.184"
+libc = "0.2.186"

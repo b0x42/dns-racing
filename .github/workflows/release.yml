@@ -58,6 +58,6 @@ jobs:
         if: contains(matrix.os, 'windows')
         run: cp target/${{ matrix.target }}/release/dns-racing.exe ${{ matrix.name }}
 
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: ${{ matrix.name }}
